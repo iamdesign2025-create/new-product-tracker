@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新品追蹤一覽表</title>
+</head>
+<body>
+<p id="msg" style="font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;padding:40px;color:#6b7780">新品追蹤一覽表載入中…</p>
+<script>
+// 看板內容放在 Google Apps Script（新品追蹤一覽表），這頁只負責載入，之後改看板不用改這個檔案
+const API = 'https://script.google.com/macros/s/AKfycbyksHF_q08C2u_Lo9VEE7lSDCtUWGPfKzn211FX2EEn7c80esyGBvYGnp3uNJo1a-gD/exec';
+fetch(API + '?action=page', { credentials: 'omit' })
+  .then(r => r.json())
+  .then(j => {
+    if (!j.ok) throw new Error(j.error || '讀取失敗');
+    const html = j.html
+      .replace("const API_URL = 'GAS';", "const API_URL = '" + API + "';")
+      .replace("fetch(API_URL,{method:'POST',", "fetch(API_URL,{method:'POST',credentials:'omit',");
+    document.open(); document.write(html); document.close();
+  })
+  .catch(e => { document.getElementById('msg').textContent = '載入失敗（' + e.message + '），請重新整理頁面。'; });
+</script>
+</body>
+</html>
